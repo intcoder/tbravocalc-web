@@ -27,20 +27,16 @@ public class CalculateController {
     @Autowired
     private CalculateResponseService calculateResponseService;
 
-    @Autowired
-    private ExternalCalculatorService calculatorService;
-
     @PostMapping("/sendFile")
     @ApiOperation("Send file")
     public UUID sendRequest(
             @RequestPart MultipartFile spreadsheet,
             @RequestParam double target,
+            @RequestParam(defaultValue = "false") boolean reversed,
             @RequestParam(required = false) Optional<Long> depth,
             @RequestParam(defaultValue = "FIRST") PrintType printType) throws IOException {
 
-        var requestId = calculateRequestService.saveRequest(target, depth.map(OptionalLong::of).orElseGet(OptionalLong::empty), printType, Spreadsheet.fromMultipartFile(spreadsheet));
-        calculatorService.process(requestId);
-        return requestId;
+        return calculateRequestService.saveRequest(target, depth.map(OptionalLong::of).orElseGet(OptionalLong::empty), printType, Spreadsheet.fromMultipartFile(spreadsheet));
     }
 
     @PostMapping("/send")
@@ -48,6 +44,7 @@ public class CalculateController {
     public UUID sendRequest(
             @RequestBody Spreadsheet spreadsheet,
             @RequestParam double target,
+            @RequestParam(defaultValue = "false") boolean reversed,
             @RequestParam(required = false) Optional<Long> depth,
             @RequestParam(defaultValue = "FIRST") PrintType printType) throws IOException {
 
@@ -59,6 +56,7 @@ public class CalculateController {
     public UUID sendRequest(
             @RequestBody double[] spreadsheet,
             @RequestParam double target,
+            @RequestParam(defaultValue = "false") boolean reversed,
             @RequestParam(required = false) Optional<Long> depth,
             @RequestParam(defaultValue = "FIRST") PrintType printType) throws IOException {
 
@@ -67,6 +65,17 @@ public class CalculateController {
 
     @GetMapping("/getResponse")
     public String getResponse(String requestId) {
-        return calculateResponseService.find(UUID.fromString(requestId)).map(CalculateResponse::getResponseString).orElseThrow();
+        UUID id;
+        try {
+            id = UUID.fromString(requestId);
+        } catch (Exception e) {
+            return "Bad request id";
+        }
+
+
+
+        return calculateResponseService.find(UUID.fromString(requestId))
+                .map(CalculateResponse::getResponseString)
+                .orElse("Request not found");
     }
 }

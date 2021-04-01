@@ -15,5 +15,7 @@ public class CalculateResponse {
     @Column(columnDefinition = "TEXT")
     private String responseString;
 
+    private boolean success;
+
     private LocalDateTime responseTime = LocalDateTime.now();
 }

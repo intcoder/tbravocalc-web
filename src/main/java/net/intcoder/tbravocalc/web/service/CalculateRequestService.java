@@ -3,8 +3,10 @@ package net.intcoder.tbravocalc.web.service;
 import net.intcoder.tbravocalc.web.domain.CalculateRequest;
 import net.intcoder.tbravocalc.web.dto.PrintType;
 import net.intcoder.tbravocalc.web.dto.Spreadsheet;
+import net.intcoder.tbravocalc.web.event.OnCalculateRequestEvent;
 import net.intcoder.tbravocalc.web.repository.CalculateRequestRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -19,6 +21,9 @@ public class CalculateRequestService {
     @Autowired
     private CalculateRequestRepo repo;
 
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
+
     public UUID saveRequest(
             double target,
             OptionalLong depth,
@@ -32,6 +37,8 @@ public class CalculateRequestService {
         req.setPrintType(printType);
 
         req = repo.save(req);
+
+        eventPublisher.publishEvent(new OnCalculateRequestEvent(req.getId()));
 
         return req.getId();
     }
