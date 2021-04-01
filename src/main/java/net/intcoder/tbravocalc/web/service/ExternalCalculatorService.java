@@ -82,6 +82,8 @@ public class ExternalCalculatorService {
         var oldPath = binPath;
         init();
 
+        log.info("Calculator BIN updated");
+
         FileUtils.deleteQuietly(oldPath.toFile());
     }
 
