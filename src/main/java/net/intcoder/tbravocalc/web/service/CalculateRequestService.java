@@ -8,10 +8,8 @@ import net.intcoder.tbravocalc.web.repository.CalculateRequestRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Optional;
 import java.util.OptionalLong;
 import java.util.UUID;
 
@@ -45,5 +43,13 @@ public class CalculateRequestService {
 
     public CalculateRequest get(UUID id) {
         return repo.findById(id).orElseThrow();
+    }
+
+    public Optional<CalculateRequest> find(UUID id) {
+        return repo.findById(id);
+    }
+
+    public boolean exists(UUID id) {
+        return repo.existsById(id);
     }
 }

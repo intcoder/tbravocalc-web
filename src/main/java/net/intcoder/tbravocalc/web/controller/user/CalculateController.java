@@ -72,7 +72,10 @@ public class CalculateController {
             return "Bad request id";
         }
 
-
+        if (calculateRequestService.exists(id)
+                && !calculateResponseService.exists(id)) {
+            return "Result is not ready";
+        }
 
         return calculateResponseService.find(UUID.fromString(requestId))
                 .map(CalculateResponse::getResponseString)

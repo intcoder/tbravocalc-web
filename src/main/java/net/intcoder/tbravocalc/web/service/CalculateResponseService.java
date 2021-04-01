@@ -36,4 +36,8 @@ public class CalculateResponseService {
     public Optional<CalculateResponse> find(UUID id) {
         return repo.findById(id);
     }
+
+    public boolean exists(UUID id) {
+        return repo.existsById(id);
+    }
 }
