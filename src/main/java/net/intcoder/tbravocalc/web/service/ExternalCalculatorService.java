@@ -84,7 +84,7 @@ public class ExternalCalculatorService {
 
         log.info("Calculator BIN updated");
 
-        FileUtils.deleteQuietly(oldPath.toFile());
+        if (oldPath != null) FileUtils.deleteQuietly(oldPath.toFile());
     }
 
     @Async
